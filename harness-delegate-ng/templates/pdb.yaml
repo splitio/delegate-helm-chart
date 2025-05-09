@@ -1,0 +1,17 @@
+{{- if and .Values.PodDisruptionBudget.enabled (or (and .Values.autoscaling.enabled (gt .Values.autoscaling.minReplicas 1)) (gt .Values.replicas 1)) }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "harness-delegate-ng.fullname" . }}
+  labels:
+    {{- include "harness-delegate-ng.labels" . | nindent 4 }}
+spec:
+  {{- if .Values.PodDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.PodDisruptionBudget.minAvailable }}
+  {{- else if .Values.PodDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.PodDisruptionBudget.maxUnavailable }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ .Values.appName }}
+{{- end }}
