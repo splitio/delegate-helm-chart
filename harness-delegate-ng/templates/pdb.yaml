@@ -13,5 +13,5 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      app: {{ .Values.appName }}
+      {{- include "harness-delegate-ng.selectorLabels" . | nindent 6 }}
 {{- end }}

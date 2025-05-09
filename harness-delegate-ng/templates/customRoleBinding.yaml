@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ template "harness-delegate-ng.fullname" . }}-custom-roleBinding
+  name: {{ include "harness-delegate-ng.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "harness-delegate-ng.labels" . | nindent 4 }}
