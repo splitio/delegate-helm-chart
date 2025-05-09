@@ -1,0 +1,57 @@
+name: Helm check, lint and push
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'push' && github.run_number || github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  helm:
+    name: Helm
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Helm check
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: mbovo/action-helm-artifactory@v1.0.5
+        with:
+          action: "check"
+        env:
+          ACTION: push
+          CHART_DIR: harness-delegate-ng
+          ARTIFACTORY_URL: https://splitio.jfrog.io/artifactory/helm/
+          ARTIFACTORY_USERNAME: ${{ vars.ARTIFACTORY_DOCKER_USER }}
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_DOCKER_PASS }}
+
+      - name: Helm lint
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: mbovo/action-helm-artifactory@v1.0.5
+        with:
+          action: "lint"
+        env:
+          ACTION: push
+          CHART_DIR: harness-delegate-ng
+          ARTIFACTORY_URL: https://splitio.jfrog.io/artifactory/helm/
+          ARTIFACTORY_USERNAME: ${{ vars.ARTIFACTORY_DOCKER_USER }}
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_DOCKER_PASS }}
+
+      - name: Helm push
+        if: ${{ github.event_name == 'push' }}
+        uses: mbovo/action-helm-artifactory@v1.0.5
+        with:
+          action: "push"
+        env:
+          ACTION: push
+          CHART_DIR: harness-delegate-ng
+          ARTIFACTORY_URL: https://splitio.jfrog.io/artifactory/helm/
+          ARTIFACTORY_USERNAME: ${{ vars.ARTIFACTORY_DOCKER_USER }}
+          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_DOCKER_PASS }}
