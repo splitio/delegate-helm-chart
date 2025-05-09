@@ -100,16 +100,16 @@ tags: ""
 # CLUSTER_VIEWER: Grants a ClusterRoleBinding to the built-in 'view' role.
 # NAMESPACE_ADMIN: Creates and binds a custom Role with full access to the specified namespace.
 #
-# Leave empty to use a custom Role or ClusterRole (see CustomRole/CustomClusterRole below).
+# Leave empty to use a custom Role or ClusterRole (see customRole/customClusterRole below).
 k8sPermissionsType: "CLUSTER_ADMIN"
 
 # Name of a custom Role to bind to the delegate.
 # Cannot be used if k8sPermissionsType is set.
-CustomRole: ""
+customRole: ""
 
 # Name of a custom ClusterRole to bind to the delegate.
 # Cannot be used if k8sPermissionsType is set.
-CustomClusterRole: ""
+customClusterRole: ""
 
 # Number of pod replica running delegate image
 replicas: 1
