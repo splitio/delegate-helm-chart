@@ -1,4 +1,4 @@
-name: Helm lint, test, package and publish
+name: Helm check, lint and push
 
 on:
   push:
