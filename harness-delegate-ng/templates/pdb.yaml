@@ -1,15 +1,15 @@
-{{- if and .Values.PodDisruptionBudget.enabled (or (and .Values.autoscaling.enabled (gt (int .Values.autoscaling.minReplicas) 1)) (gt (int .Values.replicas) 1)) }}
+{{- if and .Values.podDisruptionBudget.enabled (or (and .Values.autoscaling.enabled (gt (int .Values.autoscaling.minReplicas) 1)) (gt (int .Values.replicas) 1)) }}
 apiVersion: policy/v1
-kind: PodDisruptionBudget
+kind: podDisruptionBudget
 metadata:
   name: {{ include "harness-delegate-ng.fullname" . }}
   labels:
     {{- include "harness-delegate-ng.labels" . | nindent 4 }}
 spec:
-  {{- if .Values.PodDisruptionBudget.minAvailable }}
-  minAvailable: {{ .Values.PodDisruptionBudget.minAvailable }}
-  {{- else if .Values.PodDisruptionBudget.maxUnavailable }}
-  maxUnavailable: {{ .Values.PodDisruptionBudget.maxUnavailable }}
+  {{- if .Values.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
+  {{- else if .Values.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
   {{- end }}
   selector:
     matchLabels:

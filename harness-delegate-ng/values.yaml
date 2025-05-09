@@ -36,7 +36,7 @@ autoscaling:
   # targetMemoryUtilizationPercentage: 80
 
 # Edit this if you want to enable pod disruption budget
-PodDisruptionBudget:
+podDisruptionBudget:
   enabled: false
   minAvailable: 1
   maxUnavailable: ""
