@@ -38,7 +38,7 @@ autoscaling:
 # Edit this if you want to enable pod disruption budget
 podDisruptionBudget:
   enabled: false
-  minAvailable: 1
+  minAvailable: ""
   maxUnavailable: ""
 
 nodeSelector: {}
