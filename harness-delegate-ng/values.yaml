@@ -250,9 +250,11 @@ custom_volumes:
   #   persistentVolumeClaim:
   #     claimName: harness-delegate-ng-certs
 
-# minimum number of seconds for which a newly created Pod should be ready without any of its containers crashing, for it to be considered available.
-# This is set for improving stability during upgrade. It will tell kubernetes to wait at least this amount of seconds before removing the old pod after the new one becomes ready.
-minReadySeconds: 120
+# specifies the minimum number of seconds for which a newly created Pod should be ready without any of its containers crashing, for it to be considered available.
+minReadySeconds: 0
+
+# time to wait before moving from a TERM signal to the pod's main process to a KILL signal.
+terminationGracePeriodSeconds: 30
 
 # Enable the cluster role needed for CCM cost visibility
 # Not needed if k8sPermissionsType: "CLUSTER_ADMIN" is specified

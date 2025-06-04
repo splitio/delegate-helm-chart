@@ -55,7 +55,7 @@ spec:
         {{- end }}
     spec:
       serviceAccountName: {{ include "harness-delegate-ng.serviceAccountName" . }}
-      terminationGracePeriodSeconds: 600
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       restartPolicy: Always
       {{- if .Values.imagePullSecret }}
       imagePullSecrets:
