@@ -32,7 +32,7 @@ jobs:
 
       - name: Helm package
         working-directory: ${{ env.CHART_DIR }}
-        run: helm package ${{ env.CHART_NAME }}
+        run: helm package .
 
       - name: Helm login
         #if: ${{ github.event_name == 'push' }}
