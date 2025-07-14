@@ -16,42 +16,33 @@ jobs:
   helm:
     name: Helm
     runs-on: ubuntu-24.04
+    env:
+      CHART_DIR: harness-delegate-ng
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Helm check
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: mbovo/action-helm-artifactory@v1.0.5
-        with:
-          action: "check"
-        env:
-          ACTION: push
-          CHART_DIR: harness-delegate-ng
-          ARTIFACTORY_URL: https://splitio.jfrog.io/artifactory/helm/
-          ARTIFACTORY_USERNAME: ${{ vars.ARTIFACTORY_DOCKER_USER }}
-          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_DOCKER_PASS }}
+      - name: Get Chart name
+        working-directory: ${{ env.CHART_DIR }}
+        run: echo "CHART_NAME=$(yq .name Chart.yaml)" >> $GITHUB_ENV
 
-      - name: Helm lint
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: mbovo/action-helm-artifactory@v1.0.5
-        with:
-          action: "lint"
-        env:
-          ACTION: push
-          CHART_DIR: harness-delegate-ng
-          ARTIFACTORY_URL: https://splitio.jfrog.io/artifactory/helm/
-          ARTIFACTORY_USERNAME: ${{ vars.ARTIFACTORY_DOCKER_USER }}
-          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_DOCKER_PASS }}
+      - name: Get Chart version
+        working-directory: ${{ env.CHART_DIR }}
+        run: echo "CHART_VERSION=$(yq .version Chart.yaml)" >> $GITHUB_ENV
+
+      - name: Helm package
+        working-directory: ${{ env.CHART_DIR }}
+        run: helm package .
+
+      - name: Helm login
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          helm registry login \
+            ${{ vars.HARNESS_HELM_BASE_URL }} \
+            -u ${{ vars.HARNESS_HELM_USER }} \
+            -p ${{ secrets.HARNESS_HELM_TOKEN }}
 
       - name: Helm push
         if: ${{ github.event_name == 'push' }}
-        uses: mbovo/action-helm-artifactory@v1.0.5
-        with:
-          action: "push"
-        env:
-          ACTION: push
-          CHART_DIR: harness-delegate-ng
-          ARTIFACTORY_URL: https://splitio.jfrog.io/artifactory/helm/
-          ARTIFACTORY_USERNAME: ${{ vars.ARTIFACTORY_DOCKER_USER }}
-          ARTIFACTORY_PASSWORD: ${{ secrets.ARTIFACTORY_DOCKER_PASS }}
+        working-directory: ${{ env.CHART_DIR }}
+        run: helm push ${{ env.CHART_NAME }}-${{ env.CHART_VERSION }}.tgz ${{ vars.HARNESS_HELM_URL }}
