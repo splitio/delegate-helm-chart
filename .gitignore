@@ -1,4 +1,10 @@
+# Helm packages
+/charts/
+
+# IDE
 .idea
 *iml
+.vscode
+
+# MacOS
 *.DS_Store
-*.tgz
